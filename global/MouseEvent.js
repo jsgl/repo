@@ -231,6 +231,12 @@ jsgl.MouseEvent.OVER = 6;
 jsgl.MouseEvent.OUT = 7;
 
 /**
+ * Context menu event type. Indicates that the mouse has been right-clicked.
+ * @constant
+ */  
+jsgl.MouseEvent.CONTEXTMENU = 8;
+
+/**
  * @description Gets the X-coordinate of the location at which the event took
  * place.
  * @methodOf jsgl.MouseEvent#
