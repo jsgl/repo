@@ -556,7 +556,7 @@ jsgl.elements.AbstractElement.prototype.raiseContextMenu = function(eventArgs) {
   this.contextMenuRaiser.raiseEvent(eventArgs);
 }
 
-prototype.addChangeListener=function(listener) {
+jsgl.elements.AbstractElement.prototype.addChangeListener=function(listener) {
 
   this.onChangeRaiser.registerListener(listener);
 }
