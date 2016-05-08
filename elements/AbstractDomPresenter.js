@@ -114,6 +114,16 @@ jsgl.elements.AbstractDomPresenter.prototype.attachMouseHandlers = function(elem
         jsgl.MouseEvent.fromJsglElement(e, this.graphicsElement, jsgl.MouseEvent.CLICK));
     });
   
+  element.oncontextmenu = jsgl.util.delegate(this, function(e) {
+
+      if(jsgl.util.BrowserInfo.usesWindowEvent) {
+        e = window.event;
+      }
+      
+      this.graphicsElement.raiseContextMenu(
+        jsgl.MouseEvent.fromJsglElement(e, this.graphicsElement, jsgl.MouseEvent.CONTEXTMENU));
+    });
+  
   element.ondblclick = jsgl.util.delegate(this, function(e) {
   
       if(jsgl.util.BrowserInfo.usesWindowEvent) {

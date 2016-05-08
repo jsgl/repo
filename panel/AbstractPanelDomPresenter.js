@@ -83,6 +83,18 @@ jsgl.panel.AbstractPanelDomPresenter.prototype.initMouseHandlers = function() {
       return false;
     });
 
+  this.holderElement.oncontextmenu = jsgl.util.delegate(this, function(e) {
+
+      if(jsgl.util.BrowserInfo.usesWindowEvent) {
+        e = window.event;
+      }
+      
+      this.panelObject.raiseContextMenu(
+        jsgl.MouseEvent.fromJsglPanel(e, this.panelObject, jsgl.MouseEvent.CONTEXTMENU));
+      
+      return false;
+    });
+
   this.holderElement.ondblclick = jsgl.util.delegate(this, function(e) {
   
       if(jsgl.util.BrowserInfo.usesWindowEvent) {

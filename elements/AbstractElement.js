@@ -141,6 +141,15 @@ jsgl.elements.AbstractElement = function(panel) {
    * @private
    */            
   this.dblClickRaiser = new jsgl.util.EventRaiser();
+
+  /**
+   * MVC event raiser that informs the listeners registered via the
+   * <code>addMouseOverListener</code> method about context menu
+   * (right-click) events on the element.
+   * @type jsgl.util.EventRaiser
+   * @private
+   */
+  this.contextMenuRaiser = new jsgl.util.EventRaiser();
 }
 
 /**
@@ -510,8 +519,44 @@ jsgl.elements.AbstractElement.prototype.raiseDoubleClick = function(eventArgs) {
   this.dblClickRaiser.raiseEvent(eventArgs);
 }
 
+/**
+ * @description Adds a listener function for handling context menu (right-click)
+ * events on the element.
+ * @methodOf jsgl.elements.AbstractElement#
+ * @param {function(eventArgs)} listener The listening function. If the listener
+ * should be executed as a method of some specific object,
+ * <code>jsgl.util.delegate(obj, function(eventArgs) {...})</code> can be used.
+ */  
+jsgl.elements.AbstractElement.prototype.addContextMenuListener=function(listener) {
 
-jsgl.elements.AbstractElement.prototype.addChangeListener=function(listener) {
+  this.contextMenuRaiser.registerListener(listener);
+}
+
+/**
+ * @description Removes a listener function from the pool of context menu
+ * (right-click) event listeners.
+ * @methodOf jsgl.elements.AbstractElement#
+ * @param {function(eventArgs)} listener The listener function that should not
+ * listen to context menu (right-click) events on the element anymore.
+ */     
+jsgl.elements.AbstractElement.prototype.removeContextMenuListener=function(listener) {
+
+  this.contextMenuRaiser.unregisterListener(listener);
+}
+
+**
+ * @description Raises the context menu (right-click) event.
+ * @methodOf jsgl.elements.AbstractElement#
+ * @param {jsgl.MouseEvent} eventArgs The context menu (right-click) event
+ * arguments object.  
+ * @private
+ */ 
+jsgl.elements.AbstractElement.prototype.raiseContextMenu = function(eventArgs) {
+
+  this.contextMenuRaiser.raiseEvent(eventArgs);
+}
+
+prototype.addChangeListener=function(listener) {
 
   this.onChangeRaiser.registerListener(listener);
 }

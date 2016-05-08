@@ -38,6 +38,13 @@ jsgl.MouseEvent = function(x, y, eventType, sourceElement) {
    * @private
    */           
   this.sourceElement = sourceElement || null;
+
+    /**
+   * The original event object.
+   * @type MouseEvent
+   * @private
+   */           
+  this.eventObject = eventObject || null;
 }
 
 jsgl.MouseEvent.fromJsglElement = function(eventObject, jsglElement, eventType) {
@@ -112,7 +119,7 @@ jsgl.MouseEvent.fromJsglElement = function(eventObject, jsglElement, eventType) 
   }
   while(currElement != document.body);
 
-  return new jsgl.MouseEvent(location.X, location.Y, eventType, jsglElement);
+  return new jsgl.MouseEvent(location.X, location.Y, eventType, jsglElement, eventObject);
 }
 
 jsgl.MouseEvent.fromJsglPanel = function(eventObject, panelObject, eventType) {
@@ -167,7 +174,7 @@ jsgl.MouseEvent.fromJsglPanel = function(eventObject, panelObject, eventType) {
   }
   while(currElement != document.body);
   
-  return new jsgl.MouseEvent(location.X, location.Y, eventType, jsglElement);
+  return new jsgl.MouseEvent(location.X, location.Y, eventType, jsglElement, eventObject);
 }
 
 /**
@@ -267,6 +274,46 @@ jsgl.MouseEvent.prototype.getLocation = function() {
 jsgl.MouseEvent.prototype.getSourceElement = function() {
 
   return this.sourceElement;
+}
+
+/**
+ * @description Gets the state of the Alt key for the mouse event.
+ * @methodOf jsgl.MouseEvent#
+ * @returns {Boolean}
+ */ 
+jsgl.MouseEvent.prototype.isAltKey = function() {
+  
+  return !!this.eventObject && this.eventObject.altKey;
+}
+
+/**
+ * @description Gets the state of the Ctrl key for the mouse event.
+ * @methodOf jsgl.MouseEvent#
+ * @returns {Boolean}
+ */ 
+jsgl.MouseEvent.prototype.isCtrlKey = function() {
+  
+  return !!this.eventObject && this.eventObject.ctrlKey;
+}
+
+/**
+ * @description Gets the state of the Meta key for the mouse event.
+ * @methodOf jsgl.MouseEvent#
+ * @returns {Boolean}
+ */ 
+jsgl.MouseEvent.prototype.isMetaKey = function() {
+  
+  return !!this.eventObject && this.eventObject.metaKey;
+}
+
+/**
+ * @description Gets the state of the Shift key for the mouse event.
+ * @methodOf jsgl.MouseEvent#
+ * @returns {Boolean}
+ */ 
+jsgl.MouseEvent.prototype.isShiftKey = function() {
+  
+  return !!this.eventObject && this.eventObject.shiftKey;
 }
 
 /**

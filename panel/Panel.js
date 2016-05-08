@@ -696,6 +696,43 @@ jsgl.Panel.prototype.raiseClick = function(eventArgs) {
 }
 
 /**
+ * @description Adds a listener function for handling click events on the panel.
+ * @methodOf jsgl.Panel#
+ * @param {function(eventArgs)} listener The listening function. If the listener
+ * should be executed as a method of some specific object,
+ * <code>jsgl.util.delegate(obj, function(eventArgs) {...})</code> can be used.
+ * @since version 2.1
+ */  
+jsgl.Panel.prototype.addContextMenuListener = function(listener) {
+
+  this.contextMenuRaiser.registerListener(listener);
+}
+
+/**
+ * @description Removes a listener function from the pool of click event listeners.
+ * @methodOf jsgl.Panel#
+ * @param {function(eventArgs)} listener The listener function that should not
+ * listen to click events on the panel anymore.
+ * @since version 2.1
+ */     
+jsgl.Panel.prototype.removeContextMenuListener = function(listener) {
+
+  this.contextMenuRaiser.unregisterListener(listener);
+}
+
+/**
+ * @description Raises the click event.
+ * @methodOf jsgl.Panel#
+ * @param {jsgl.MouseEvent} eventArgs The click event arguments object.  
+ * @private
+ * @since version 2.1 
+ */ 
+jsgl.Panel.prototype.raiseContextMenu = function(eventArgs) {
+
+  this.contextMenuRaiser.raiseEvent(eventArgs);
+}
+
+/**
  * @description Adds a listener function for handling double click events on the
  * panel.
  * @methodOf jsgl.Panel#
