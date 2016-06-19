@@ -145,6 +145,6 @@ foreach $file (@files) {
       print $_;
     }
     close FILE;
-    print ";";
+    print ";\n\n";
   }
 }

@@ -544,7 +544,7 @@ jsgl.elements.AbstractElement.prototype.removeContextMenuListener=function(liste
   this.contextMenuRaiser.unregisterListener(listener);
 }
 
-**
+/**
  * @description Raises the context menu (right-click) event.
  * @methodOf jsgl.elements.AbstractElement#
  * @param {jsgl.MouseEvent} eventArgs The context menu (right-click) event
