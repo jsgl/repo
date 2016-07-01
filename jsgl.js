@@ -7127,7 +7127,7 @@ jsgl.elements.SvgRectangleDomPresenter.prototype.update = function() {
 jsgl.elements.VmlRectangleDomPresenter = function(ownerDocument) {
 
   jsgl.elements.AbstractDomPresenter.call(this);
-  
+
   /**
    * The VML <code>&lt;shape&gt;</code> element to be used for rendering. Note
    * that general <code>&lt;shape&gt;</code> element is used instead of VML
@@ -7138,7 +7138,7 @@ jsgl.elements.VmlRectangleDomPresenter = function(ownerDocument) {
    */
   this.vmlShapeElement = document.createElement("vml:shape");
   this.vmlShapeElement.style.position = "absolute";
-    
+
   /**
    * The VML <code>&lt;stroke&gt;</code> subelement that specifies style of the
    * rectangle's outline.
@@ -7156,8 +7156,8 @@ jsgl.elements.VmlRectangleDomPresenter = function(ownerDocument) {
    */
   this.vmlFillElement = ownerDocument.createElement("vml:fill");
   this.vmlShapeElement.appendChild(this.vmlFillElement);
-  
-  this.attachMouseHandlers(this.vmlShapeElement);         
+
+  this.attachMouseHandlers(this.vmlShapeElement);
 }
 jsgl.elements.VmlRectangleDomPresenter.jsglExtend(
   jsgl.elements.AbstractDomPresenter);
@@ -7168,7 +7168,7 @@ jsgl.elements.VmlRectangleDomPresenter.jsglExtend(
  * @methodOf jsgl.elements.VmlRectangleDomPresenter#
  * @returns VmlShapeElement
  * @since version 2.0
- */    
+ */
 jsgl.elements.VmlRectangleDomPresenter.prototype.getXmlElement = function() {
 
   return this.vmlShapeElement;
@@ -7192,7 +7192,7 @@ jsgl.elements.VmlRectangleDomPresenter.prototype.getStrokeElement = function() {
  * @methodOf jsgl.elements.VmlRectangleDomPresenter#
  * @returns VmlFillElement
  * @since version 2.0
- */  
+ */
 jsgl.elements.VmlRectangleDomPresenter.prototype.getFillElement = function() {
 
   return this.vmlFillElement;
@@ -7203,13 +7203,13 @@ jsgl.elements.VmlRectangleDomPresenter.prototype.getFillElement = function() {
  * of the API rectangle object associated.
  * @methodOf jsgl.elements.VmlRectangleDomPresenter#
  * @since version 2.0
- */  
+ */
 jsgl.elements.VmlRectangleDomPresenter.prototype.update = function() {
 
   jsgl.elements.AbstractDomPresenter.prototype.update.call(this);
 
   // cooperates with Number.prototype.jsglVmlize()
-  
+
   var size = this.graphicsElement.getSize(),
       radii = new jsgl.Vector2D(
         Math.min(this.graphicsElement.getXRadius(), size.X/2),
@@ -7219,55 +7219,55 @@ jsgl.elements.VmlRectangleDomPresenter.prototype.update = function() {
 
   var dPhi = Math.PI * this.graphicsElement.getRotation() / 180;
 
-  var origCX, origCY;
-  
+  var origCX = 0, origCY = 0;
+
   switch(this.graphicsElement.getHorizontalAnchor()) {
-  
+
     case jsgl.HorizontalAnchor.LEFT:
-    
+
       origCX = location.X + size.X/2;
       break;
-    
+
     case jsgl.HorizontalAnchor.CENTER:
-    
+
       origCX = location.X;
       break;
-    
+
     case jsgl.HorizontalAnchor.RIGHT:
-    
+
       origCX = location.X - size.X/2;
       break;
   }
-  
+
   switch(this.graphicsElement.getVerticalAnchor()) {
-  
+
     case jsgl.VerticalAnchor.TOP:
-    
+
       origCY = location.Y + size.Y/2;
       break;
-    
+
     case jsgl.VerticalAnchor.MIDDLE:
-    
+
       origCY = location.Y;
       break;
-    
+
     case jsgl.VerticalAnchor.BOTTOM:
-    
+
       origCY = location.Y - size.Y/2;
       break;
   }
-  
+
   var origPhi = Math.atan2(origCY - location.Y, origCX - location.X);
-  
+
   var d = jsgl.Vector2D.getDistance(location, new jsgl.Vector2D(origCX, origCY));
-  
+
   var trCX = location.X + Math.cos(origPhi + dPhi) * d;
   var trCY = location.Y + Math.sin(origPhi + dPhi) * d;
 
   this.vmlShapeElement.style.left = trCX - size.X / 2;
   this.vmlShapeElement.style.top = trCY - size.Y / 2;
-  
-  
+
+
   this.vmlShapeElement.coordsize = size.X.jsglVmlize() + " " + size.Y.jsglVmlize();
   this.vmlShapeElement.style.width = size.X;
   this.vmlShapeElement.style.height = size.Y;
@@ -7279,44 +7279,45 @@ jsgl.elements.VmlRectangleDomPresenter.prototype.update = function() {
   var rounded = radii.X > 0 && radii.Y > 0;
 
   var pathStr = "m" + radii.X.jsglVmlize() + ",0";
-  
+
   pathStr += "l" + (size.X - (rounded ? radii.X : 0)).jsglVmlize() + ",0";
 
   if(rounded) {
 
     pathStr += "qx" + size.X.jsglVmlize() + "," + radii.Y.jsglVmlize();
   }
-  
+
   pathStr += "l" + size.X.jsglVmlize() + "," + (size.Y - (rounded ? radii.Y : 0)).jsglVmlize();
-  
+
   if(rounded) {
 
     pathStr += "qy" + (size.X - radii.X).jsglVmlize() + "," + size.Y.jsglVmlize();
   }
-  
+
   pathStr += "l" + radii.X.jsglVmlize() + "," + size.Y.jsglVmlize();
-  
+
   if(rounded) {
-  
+
     pathStr += "qx0," + (size.Y - radii.Y).jsglVmlize();
   }
-  
+
   pathStr += "l0," + radii.Y.jsglVmlize();
-  
+
   if(rounded) {
-  
+
     pathStr += "qy" + radii.X.jsglVmlize() + ",0";
   }
-  
+
   pathStr += "ex";
-  
+
   this.vmlShapeElement.rotation = this.graphicsElement.getRotation();
-  
+
   this.vmlShapeElement.path = pathStr;
 
   this.graphicsElement.getStroke().applyToVmlStrokeElement(this.vmlStrokeElement);
   this.graphicsElement.getFill().applyToVmlFillElement(this.vmlFillElement);
-};
+}
+;
 
 /**
  * @fileOverview Declaration and implementation of <code>jsgl.elements.Line</code>.
@@ -9981,7 +9982,7 @@ jsgl.elements.AbstractImageDomPresenter.prototype.getImageSize = function() {
 jsgl.elements.SvgImageDomPresenter = function(ownerDocument) {
 
   jsgl.elements.AbstractImageDomPresenter.call(this);
-  
+
   /**
    * The SVG <code>&lt;g&gt;</code> element which hold the image and the rectangle
    * which is used for painting eventual outline.
@@ -9989,7 +9990,7 @@ jsgl.elements.SvgImageDomPresenter = function(ownerDocument) {
    * @private
    */
   this.svgGElement = ownerDocument.createElementNS("http://www.w3.org/2000/svg","g");
-  
+
   /**
    * The SVG image element.
    * @type SVGImageElement
@@ -9998,12 +9999,12 @@ jsgl.elements.SvgImageDomPresenter = function(ownerDocument) {
   this.svgImageElement = ownerDocument.createElementNS("http://www.w3.org/2000/svg","image");
   this.svgImageElement.setAttribute('preserveAspectRatio', 'none');
   this.svgGElement.appendChild(this.svgImageElement);
-  
+
   /**
    * The SVG rectangle element used for painting eventual outline of the image.
    * @type SVGRectElement
    * @private
-   */           
+   */
   this.svgRectElement = ownerDocument.createElementNS("http://www.w3.org/2000/svg","rect");
   this.svgRectElement.style.setProperty("fill", "none", null);
   this.svgGElement.appendChild(this.svgRectElement);
@@ -10036,68 +10037,68 @@ jsgl.elements.SvgImageDomPresenter.prototype.getXmlElement = function() {
 jsgl.elements.SvgImageDomPresenter.prototype.update = function() {
 
   this.loadUrl(this.graphicsElement.getUrl());
-  
+
   if(!this.isLoaded) {
-    
+
     window.setTimeout(jsgl.util.delegate(this, this.update), 50);
     return;
   }
-  
+
   jsgl.elements.AbstractDomPresenter.prototype.update.call(this);
-  
+
   var size = this.graphicsElement.getSize(),
       location = this.graphicsElement.getLocation();
 
-  var x,y;
+  var x = 0, y = 0;
 
   switch(this.graphicsElement.getHorizontalAnchor()) {
-  
+
     case jsgl.HorizontalAnchor.LEFT:
-    
+
       x = location.X;
       break;
-    
+
     case jsgl.HorizontalAnchor.CENTER:
-    
+
       x = location.X - size.X / 2;
       break;
-    
+
     case jsgl.HorizontalAnchor.RIGHT:
-    
+
       x = location.X - size.X;
       break;
   }
-  
+
   switch(this.graphicsElement.getVerticalAnchor()) {
-  
+
     case jsgl.VerticalAnchor.TOP:
-    
+
       y = location.Y;
       break;
-    
+
     case jsgl.VerticalAnchor.MIDDLE:
-    
+
       y = location.Y - size.Y / 2;
       break;
-    
+
     case jsgl.VerticalAnchor.BOTTOM:
-    
+
       y = location.Y - size.Y;
       break;
   }
 
   this.svgImageElement.setAttribute("x", x);
   this.svgRectElement.setAttribute("x", x);
-  
+
   this.svgImageElement.setAttribute("y", y);
   this.svgRectElement.setAttribute("y", y);
-  
+
   this.svgImageElement.setAttribute("width", size.X);
   this.svgRectElement.setAttribute("width", size.X);
-  
+
   this.svgImageElement.setAttribute("height", size.Y);
   this.svgRectElement.setAttribute("height", size.Y);
-  
+
   this.svgImageElement.setAttributeNS("http://www.w3.org/1999/xlink","href", this.graphicsElement.getUrl());
 
   this.svgGElement.setAttribute("transform",
@@ -10107,7 +10108,8 @@ jsgl.elements.SvgImageDomPresenter.prototype.update = function() {
   this.svgImageElement.style.opacity = this.graphicsElement.getOpacity();
 
   this.graphicsElement.getStroke().applyToSvgElement(this.svgRectElement);
-} ;
+}
+;
 
 /**
  * @fileOverview <code>jsgl.elements.VmlImageDomPresenter</code> implementation.
@@ -10127,7 +10129,7 @@ jsgl.elements.SvgImageDomPresenter.prototype.update = function() {
 jsgl.elements.VmlImageDomPresenter = function(ownerDocument) {
 
   jsgl.elements.AbstractImageDomPresenter.call(this);
-  
+
   /**
    * The VML <code>&lt;rect&gt;</code> element used for rendering.
    * @type VmlRectElement
@@ -10136,28 +10138,28 @@ jsgl.elements.VmlImageDomPresenter = function(ownerDocument) {
   this.vmlRectElement = ownerDocument.createElement("vml:rect");
   this.vmlRectElement.style.position = "absolute";
   this.vmlRectElement.stroked = false;
-  
+
   /**
    * The VML <code>&lt;stroke&gt;</code> elements specifying the outline of the
    * image, i.e. the stroke of the <code>&lt;rect&gt;</code> object.
    * @type VmlStrokeElement
    * @private
    */
-  this.vmlStrokeElement = ownerDocument.createElement("vml:stroke");         
+  this.vmlStrokeElement = ownerDocument.createElement("vml:stroke");
   this.vmlRectElement.appendChild(this.vmlStrokeElement);
-  
+
   /**
    * The VML <code>&lt;fill&gt;</code> element specifying the image to be
    * rendered on <code>&lt;rect&gt;</code>'s background.
    * @type VmlFillElement
    * @private
-   */      
+   */
   this.vmlFillElement = ownerDocument.createElement("vml:fill");
   this.vmlFillElement.type = "frame";
   this.vmlFillElement.rotate = true;
-  
+
   this.vmlRectElement.appendChild(this.vmlFillElement);
-  
+
   this.attachMouseHandlers(this.vmlRectElement);
 }
 jsgl.elements.VmlImageDomPresenter.jsglExtend(
@@ -10184,63 +10186,63 @@ jsgl.elements.VmlImageDomPresenter.prototype.getXmlElement = function() {
 jsgl.elements.VmlImageDomPresenter.prototype.update = function() {
 
   this.loadUrl(this.graphicsElement.getUrl());
-  
+
   if(!this.isLoaded) {
-    
+
     window.setTimeout(jsgl.util.delegate(this, this.update), 50);
     return;
   }
-  
+
   jsgl.elements.AbstractDomPresenter.prototype.update.call(this);
-  
+
   var size = this.graphicsElement.getSize(),
       location = this.graphicsElement.getLocation();
 
 
   var dPhi = Math.PI * this.graphicsElement.getRotation() / 180;
 
-  var origCX, origCY;
-  
+  var origCX = 0, origCY = 0;
+
   switch(this.graphicsElement.getHorizontalAnchor()) {
-  
+
     case jsgl.HorizontalAnchor.LEFT:
-    
+
       origCX = location.X + size.X/2;
       break;
-    
+
     case jsgl.HorizontalAnchor.CENTER:
-    
+
       origCX = location.X;
       break;
-    
+
     case jsgl.HorizontalAnchor.RIGHT:
-    
+
       origCX = location.X - size.X/2;
       break;
   }
-  
+
   switch(this.graphicsElement.getVerticalAnchor()) {
-  
+
     case jsgl.VerticalAnchor.TOP:
-    
+
       origCY = location.Y + size.Y/2;
       break;
-    
+
     case jsgl.VerticalAnchor.MIDDLE:
-    
+
       origCY = location.Y;
       break;
-    
+
     case jsgl.VerticalAnchor.BOTTOM:
-    
+
       origCY = location.Y - size.Y/2;
       break;
   }
-  
+
   var origPhi = Math.atan2(origCY - location.Y, origCX - location.X);
-  
+
   var d = jsgl.Vector2D.getDistance(location, new jsgl.Vector2D(origCX, origCY));
-  
+
   var trCX = location.X + Math.cos(origPhi + dPhi) * d;
   var trCY = location.Y + Math.sin(origPhi + dPhi) * d;
 
@@ -10251,12 +10253,13 @@ jsgl.elements.VmlImageDomPresenter.prototype.update = function() {
   this.vmlRectElement.style.height = size.Y;
 
   this.vmlRectElement.style.rotation = this.graphicsElement.getRotation() % 360;
-  
-  this.vmlFillElement.src = this.graphicsElement.getUrl();  
+
+  this.vmlFillElement.src = this.graphicsElement.getUrl();
   this.vmlFillElement.opacity = this.graphicsElement.getOpacity();
-  
+
   this.graphicsElement.getStroke().applyToVmlStrokeElement(this.vmlStrokeElement);
-}     ;
+}
+;
 
 /**
  * @fileOverview Declaration and implementation of
@@ -10818,6 +10821,7 @@ jsgl.Panel=function(holderElement) {
   this.mouseOutRaiser = new jsgl.util.EventRaiser();
   this.clickRaiser = new jsgl.util.EventRaiser();
   this.dblClickRaiser = new jsgl.util.EventRaiser();
+  this.contextMenuRaiser = new jsgl.util.EventRaiser();
 }
 
 /**
@@ -11882,41 +11886,42 @@ jsgl.HorizontalAnchor={
  * @constructor
  * //@description Creates new instance of <code>jsgl.MouseEvent</code>.
  * //Contains few hacks making detection of coordinates to work properly on various
- * //browsers. 
- * //@param {MouseEvent} eventObject The event object generated by the web browser.
- * //@param {number} 
-  The type of the event. If not provided,
+ * //browsers.
+ * //@param {number} x The x-coordinate of the event
+ * //@param {number} y The y-coordinate of the event
+ * //@param {number} eventType The type of the event. If not provided,
  * //<code>jsgl.MouseEvent.UNKNOWN</code> will be used.
+ * //@param {MouseEvent} eventObject The event object generated by the web browser.
  * @since version 2.0
  */
-jsgl.MouseEvent = function(x, y, eventType, sourceElement) {
-  
+jsgl.MouseEvent = function(x, y, eventType, sourceElement, eventObject) {
+
   /**
    * Type of the mouse event.
    * @type number
    * @private
-   */      
+   */
   this.eventType = eventType || jsgl.MouseEvent.UNKNOWN;
 
   /**
    * Location of the event in the coordspace of element's container.
    * @type jsgl.Vector2D
    * @private
-   */           
+   */
   this.location = new jsgl.Vector2D(x, y);
-  
+
   /**
    * The element that the event occured on.
    * @type jsgl.elements.AbstractElement
    * @private
-   */           
+   */
   this.sourceElement = sourceElement || null;
 
     /**
    * The original event object.
    * @type MouseEvent
    * @private
-   */           
+   */
   this.eventObject = eventObject || null;
 }
 
@@ -11924,9 +11929,9 @@ jsgl.MouseEvent.fromJsglElement = function(eventObject, jsglElement, eventType) 
 
   var location;
 
-  /* Begin:  Determine location */  
+  /* Begin:  Determine location */
   if(jsgl.util.BrowserInfo.usesWindowEvent) {
-  
+
     if(jsgl.util.BrowserInfo.isOpera) {
 
       location = new jsgl.Vector2D(eventObject.pageX, eventObject.pageY);
@@ -11935,10 +11940,10 @@ jsgl.MouseEvent.fromJsglElement = function(eventObject, jsglElement, eventType) 
 
       location = new jsgl.Vector2D(eventObject.x, eventObject.y);
     }
-    
+
     location.X -= parseInt(jsglElement.getPanel().getHolderElement().style.borderLeftWidth) || 0;
     location.Y -= parseInt(jsglElement.getPanel().getHolderElement().style.borderTopWidth) || 0;
-    
+
   }
   else {
 
@@ -11946,30 +11951,30 @@ jsgl.MouseEvent.fromJsglElement = function(eventObject, jsglElement, eventType) 
   }
 
   var panel = jsglElement.getPanel();
-  
+
   var offset = new jsgl.Vector2D();
   var currContainer = jsglElement.getContainer();
-  
+
   do {
-  
+
     if(currContainer != panel) {
 
       offset = offset.add(currContainer.getLocation());
       currContainer = currContainer.getContainer();
     }
-  
+
   }
   while(currContainer != panel);
-  
+
   if(jsgl.util.BrowserInfo.isOpera) {
 
     var currElement = jsglElement.getPanel().getHolderElement();
-    
+
     while(currElement != document.body) {
 
       offset.X += currElement.offsetLeft;
       offset.Y += currElement.offsetTop;
-      
+
       currElement = currElement.offsetParent;
     }
   }
@@ -11979,15 +11984,15 @@ jsgl.MouseEvent.fromJsglElement = function(eventObject, jsglElement, eventType) 
 
   var jsglElement = null,
       currElement = eventObject.srcElement || eventObject.target;
-  
+
   do {
-  
+
     if(currElement.jsglElement) {
-    
+
       jsglElement = currElement.jsglElement;
       break;
     }
-    
+
     currElement = currElement.parentNode;
   }
   while(currElement != document.body);
@@ -11998,9 +12003,9 @@ jsgl.MouseEvent.fromJsglElement = function(eventObject, jsglElement, eventType) 
 jsgl.MouseEvent.fromJsglPanel = function(eventObject, panelObject, eventType) {
 
   var location = new jsgl.Vector2D();
-  
+
   if(jsgl.util.BrowserInfo.usesWindowEvent) {
-  
+
     if(jsgl.util.BrowserInfo.isOpera) {
 
       location = new jsgl.Vector2D(eventObject.pageX, eventObject.pageY);
@@ -12009,10 +12014,10 @@ jsgl.MouseEvent.fromJsglPanel = function(eventObject, panelObject, eventType) {
 
       location = new jsgl.Vector2D(eventObject.x, eventObject.y);
     }
-    
+
     location.X -= parseInt(panelObject.getHolderElement().style.borderLeftWidth) || 0;
     location.Y -= parseInt(panelObject.getHolderElement().style.borderTopWidth) || 0;
-    
+
   }
   else {
 
@@ -12022,91 +12027,91 @@ jsgl.MouseEvent.fromJsglPanel = function(eventObject, panelObject, eventType) {
   if(jsgl.util.BrowserInfo.isOpera) {
 
     var currElement = panelObject.getHolderElement();
-    
+
     while(currElement != document.body) {
 
       location.X -= currElement.offsetLeft;
       location.Y -= currElement.offsetTop;
-      
+
       currElement = currElement.offsetParent;
     }
   }
 
   var jsglElement = null,
       currElement = eventObject.srcElement || eventObject.target;
-  
+
   do {
-  
+
     if(currElement.jsglElement) {
-    
+
       jsglElement = currElement.jsglElement;
       break;
     }
-    
+
     currElement = currElement.parentNode;
   }
   while(currElement != document.body);
-  
+
   return new jsgl.MouseEvent(location.X, location.Y, eventType, jsglElement, eventObject);
 }
 
 /**
  * Unknown type of event (indicates possible error).
  * @constant
- */ 
+ */
 jsgl.MouseEvent.UNKNOWN = 0;
 
 /**
  * Click mouse event type. Indicates that mouse button has been pushed and
  * released at some location within the element.
  * @constant
- */  
+ */
 jsgl.MouseEvent.CLICK = 1;
 
 /**
  * Double-click mouse event type. Indicates that mouse button has been pushed
  * and released twice at some location within the element.
  * @constant
- */  
+ */
 jsgl.MouseEvent.DOUBLE_CLICK = 2;
 
 /**
  * Mouse-down event type. Indicates that mouse button has been pushed at some
  * location within the element.
  * @constant
- */   
+ */
 jsgl.MouseEvent.DOWN = 3;
 
 /**
  * Mouse-up event type. Indicates that mouse button has been released at some
  * location within the element.
  * @contant
- */ 
+ */
 jsgl.MouseEvent.UP = 4;
 
 /**
  * Mouse-move event type. Indicates that the mouse has moved at some location
  * within the element.
  * @constant
- */   
+ */
 jsgl.MouseEvent.MOVE = 5;
 
 /**
  * Mouse-over event type. Indicates that the mouse has entered the element.
  * @constant
- */   
+ */
 jsgl.MouseEvent.OVER = 6;
 
 /**
  * Mouse-out event type. Indicates that the mouse has left the element.
  * @constant
- */  
+ */
 jsgl.MouseEvent.OUT = 7;
 
 /**
  * Context menu event type. Indicates that the mouse has been right-clicked.
  * @constant
- */  
+ */
 jsgl.MouseEvent.CONTEXTMENU = 8;
 
 /**
@@ -12115,7 +12120,7 @@ jsgl.MouseEvent.CONTEXTMENU = 8;
  * @methodOf jsgl.MouseEvent#
  * @returns {number}
  * @since version 2.0
- */      
+ */
 jsgl.MouseEvent.prototype.getX = function() {
 
   return this.location.X;
@@ -12127,7 +12132,7 @@ jsgl.MouseEvent.prototype.getX = function() {
  * @methodOf jsgl.MouseEvent#
  * @returns {number}
  * @since version 2.0
- */     
+ */
 jsgl.MouseEvent.prototype.getY = function() {
 
   return this.location.Y;
@@ -12139,7 +12144,7 @@ jsgl.MouseEvent.prototype.getY = function() {
  * @methodOf jsgl.MouseEvent#
  * @returns {jsgl.Vector2D}
  * @since version 2.0
- */  
+ */
 jsgl.MouseEvent.prototype.getLocation = function() {
 
   return jsgl.cloneObject(this.location);
@@ -12149,7 +12154,7 @@ jsgl.MouseEvent.prototype.getLocation = function() {
  * @description Gets the JSGL element on which the event took place. If there
  * is no such element, e.g. if the event has been captured at an empty part of
  * a <code>jsgl.Panel</code> object, <code>null</code> is returned.
- */ 
+ */
 jsgl.MouseEvent.prototype.getSourceElement = function() {
 
   return this.sourceElement;
@@ -12159,9 +12164,9 @@ jsgl.MouseEvent.prototype.getSourceElement = function() {
  * @description Gets the state of the Alt key for the mouse event.
  * @methodOf jsgl.MouseEvent#
  * @returns {Boolean}
- */ 
+ */
 jsgl.MouseEvent.prototype.isAltKey = function() {
-  
+
   return !!this.eventObject && this.eventObject.altKey;
 }
 
@@ -12169,9 +12174,9 @@ jsgl.MouseEvent.prototype.isAltKey = function() {
  * @description Gets the state of the Ctrl key for the mouse event.
  * @methodOf jsgl.MouseEvent#
  * @returns {Boolean}
- */ 
+ */
 jsgl.MouseEvent.prototype.isCtrlKey = function() {
-  
+
   return !!this.eventObject && this.eventObject.ctrlKey;
 }
 
@@ -12179,9 +12184,9 @@ jsgl.MouseEvent.prototype.isCtrlKey = function() {
  * @description Gets the state of the Meta key for the mouse event.
  * @methodOf jsgl.MouseEvent#
  * @returns {Boolean}
- */ 
+ */
 jsgl.MouseEvent.prototype.isMetaKey = function() {
-  
+
   return !!this.eventObject && this.eventObject.metaKey;
 }
 
@@ -12189,9 +12194,9 @@ jsgl.MouseEvent.prototype.isMetaKey = function() {
  * @description Gets the state of the Shift key for the mouse event.
  * @methodOf jsgl.MouseEvent#
  * @returns {Boolean}
- */ 
+ */
 jsgl.MouseEvent.prototype.isShiftKey = function() {
-  
+
   return !!this.eventObject && this.eventObject.shiftKey;
 }
 
@@ -12200,12 +12205,13 @@ jsgl.MouseEvent.prototype.isShiftKey = function() {
  * mouse event object has been generated.
  * @methodOf jsgl.MouseEvent#
  * @returns {Number}
- * @since version 2.0    
- */ 
+ * @since version 2.0
+ */
 jsgl.MouseEvent.prototype.getEventType = function() {
 
   return this.eventType;
-};
+}
+;
 
 /**
  * @fileOverview Declaration of </code>jsgl.path.AbstractPathSegment</code> class.

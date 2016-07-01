@@ -79,6 +79,7 @@ jsgl.Panel=function(holderElement) {
   this.mouseOutRaiser = new jsgl.util.EventRaiser();
   this.clickRaiser = new jsgl.util.EventRaiser();
   this.dblClickRaiser = new jsgl.util.EventRaiser();
+  this.contextMenuRaiser = new jsgl.util.EventRaiser();
 }
 
 /**
